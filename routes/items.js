@@ -1,6 +1,6 @@
 // items routes
 const express = require('express');
-const { builtinModules } = require('module');
+const HttpError = require('../models/http-error');
 
 const router = express.Router();
 
@@ -51,9 +51,7 @@ router.get('/', (req, res, next) => {
     // return res
     //   .status(404)
     //   .json({ message: 'Could not find a place with the provided id.' });
-    const error = new Error('Could not find items.');
-    error.code = 404;
-    throw error;
+    throw new HttpError('Could not find items.', 404);
   }
 
   res.json(itemsData);
@@ -68,9 +66,7 @@ router.get('/:id', (req, res, next) => {
     // return res
     //   .status(404)
     //   .json({ message: 'Could not find a place with the provided id.' });
-    const error = new Error('Could not find an item with the provided id.');
-    error.code = 404;
-    return next(error);
+    return next(new Error('Could not find an item with the provided id.', 404));
   }
 
   res.json(item);
