@@ -1,7 +1,7 @@
 const HttpError = require('../models/http-error');
 const { v4: uuidv4 } = require('uuid');
 
-itemsData = [
+let itemsData = [
   {
     id: '1',
     group: 'equipment',
@@ -51,7 +51,7 @@ const getItems = (req, res, next) => {
   res.json(itemsData);
 };
 
-const getItemById = (req, res, next) => {
+const getItem = (req, res, next) => {
   const id = req.params.id;
 
   let item = itemsData.find((item) => item.id === id);
@@ -77,6 +77,30 @@ const createItem = (req, res, next) => {
   res.status(201).json({ item: createdItem });
 };
 
-exports.getItemById = getItemById;
+const updateItem = (req, res, next) => {
+  const { title, description, group } = req.body;
+  const id = req.params.id;
+
+  const updatedItem = { ...itemsData.find((item) => item.id === id) };
+  const itemIndex = itemsData.findIndex((item) => item.id === id);
+
+  updatedItem.title = title;
+  updatedItem.description = description;
+  updatedItem.group = group;
+
+  itemsData[itemIndex] = updatedItem;
+
+  res.status(200).json({ item: updatedItem });
+};
+
+const deleteItem = (req, res, next) => {
+  const id = req.params.id;
+  itemsData = itemsData.filter((item) => item.id !== id);
+  res.status(200).json({ message: `Deleted Item with id: ${id}.` });
+};
+
+exports.getItem = getItem;
 exports.getItems = getItems;
 exports.createItem = createItem;
+exports.updateItem = updateItem;
+exports.deleteItem = deleteItem;
