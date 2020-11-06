@@ -1,5 +1,5 @@
-const HttpError = require('../models/http-error');
 const { v4: uuidv4 } = require('uuid');
+const HttpError = require('../models/http-error');
 
 let usersData = [
   {
@@ -20,6 +20,11 @@ let usersData = [
 
 const signup = (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
+
+  const hasUser = usersData.find((user) => user.email === email);
+  if (hasUser) {
+    throw new HttpError('Could not create user, email already exists.', 422);
+  }
 
   const newUser = {
     id: uuidv4(),
