@@ -1,5 +1,6 @@
 const HttpError = require('../models/http-error');
 const { v4: uuidv4 } = require('uuid');
+const { validationResult } = require('express-validator');
 
 let itemsData = [
   {
@@ -64,6 +65,11 @@ const getItem = (req, res, next) => {
 };
 
 const createItem = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new HttpError('Invalid inputs passed, please check your data.', 422);
+  }
+
   const { title, description, group } = req.body;
   const createdItem = {
     id: uuidv4(),
@@ -78,6 +84,11 @@ const createItem = (req, res, next) => {
 };
 
 const updateItem = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new HttpError('Invalid inputs passed, please check your data.', 422);
+  }
+
   const { title, description, group } = req.body;
   const id = req.params.id;
 
