@@ -106,6 +106,10 @@ const updateItem = (req, res, next) => {
 
 const deleteItem = (req, res, next) => {
   const id = req.params.id;
+  if (!itemsData.find((item) => item.id === id)) {
+    throw new HttpError('Could not find a item for that id.', 404);
+  }
+
   itemsData = itemsData.filter((item) => item.id !== id);
   res.status(200).json({ message: `Deleted Item with id: ${id}.` });
 };
